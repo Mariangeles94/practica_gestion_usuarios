@@ -44,10 +44,28 @@ class ManageUser {
         $parametrosWhere["email"]=$pkemail;
         return $this->bd->update($this->tabla, $parametros, $parametrosWhere);
     }
+   function setActivo($email,$activo){
+        //Update de todos los campos menos el id, el id se usara como el where para el update numero de filas modificadas
+        $parametrosSet = array();
+        $parametrosSet['activo'] = $activo;
+        
+        $parametrosWhere = array();
+        $parametrosWhere["email"]=$email;
+        return $this->bd->update($this->tabla, $parametrosSet, $parametrosWhere);
+    }
+     function setClave($email,$clave){
+        //Update de todos los campos menos el id, el id se usara como el where para el update numero de filas modificadas
+        $parametrosSet = array();
+        $parametrosSet['clave'] = $clave;
+        
+        $parametrosWhere = array();
+        $parametrosWhere["email"]=$email;
+        return $this->bd->update($this->tabla, $parametrosSet, $parametrosWhere);
+    }
 
     function insert(User $user) {
-        //Se pasa un objeto city y se inserta, se devuelve el id del elemento con el que se ha insertado
         $parametrosSet = array();
+        $parametrosSet['email'] = $user->getEmail();
         $parametrosSet['clave'] = $user->getClave();
         $parametrosSet['alias'] = $user->getAlias();
         $parametrosSet['fechaAlta'] = $user->getFechaAlta();
@@ -58,12 +76,20 @@ class ManageUser {
     }
 
     function getList($pagina = 1, $order = "", $nrpp = Constant::NRPP, $condicion = "1=1", $parametros = array()) {
-        /*$ordenPredeterminado = "$order, Name, CountryCode, ID";
-        if ($order=== "" || $order === null) {
-            $ordenPredeterminado = "Name, CountryCode, ID";
-        }*/
+       
         $resgistroInicial = ($pagina - 1) * $nrpp;
         $this->bd->select($this->tabla, "*", $condicion, $parametros, $ordenPredeterminado, "$resgistroInicial, $nrpp"); /* limite va desde 1 y saca 10 registros */
+        $r = array();
+        while ($fila = $this->bd->getRow()) {
+            $user = new User();
+            $user->set($fila);
+            $r[] = $user;
+        }
+        return $r;
+    }
+     function getList2($pagina = 1, $nrpp = Constant::NRPP) {
+        $resgistroInicial = ($pagina - 1) * $nrpp;
+        $this->bd->select($this->tabla, "*", "1=1", array(), "email", "$resgistroInicial, $nrpp"); /* limite va desde 1 y saca 10 registros */
         $r = array();
         while ($fila = $this->bd->getRow()) {
             $user = new User();
@@ -77,7 +103,10 @@ class ManageUser {
         $this->bd->query($this->tabla, "*", array());
         $array = array();
         while ($fila = $this->bd->getRow()) {
-            $array[$fila[0]] = $fila[1];
+            $user = new User();
+            $user->set($fila);
+            $array = $user;
+           // $array[$fila[0]] = $fila[1];
         }
         return $array;
     }

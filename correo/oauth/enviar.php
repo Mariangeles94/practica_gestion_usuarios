@@ -1,14 +1,20 @@
 <?php
 session_start();
+require '../../clases/Request.php';
 require '../../clases/Constant.php';
 $semilla = Constant::SEMILLA;
-$id = uniqid();
+$op = Request::get("op");
 $origen = "alexita870@gmail.com";
 $alias = "Mariangeles";
-$destino = "mariangeles11_1994@hotmail.com";
-//$destino = Request::get("usuario");
+$destino = Request::get("usuario");
 $asunto = "Prueba de correo";
-$mensaje = "http://localhost:8008/Gestion/correo/oauth/enviar.php?$semilla";
+if($op == 0){
+$mensaje = "https://gestion-usuarios-mariangeles94.c9users.io/usuario/phpmensaje.php?email=$destino&activo=$semilla";
+}else{
+        $mensaje = "https://gestion-usuarios-mariangeles94.c9users.io/usuario/nuevaclave.php?email=$destino&activo=$semilla" ;
+    
+}
+   
 
 require_once '../../clases/Google/autoload.php';
 require_once '../class.phpmailer.php';  //las últimas versiones también vienen con autoload

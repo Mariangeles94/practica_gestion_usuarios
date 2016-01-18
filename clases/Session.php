@@ -10,7 +10,7 @@ class Session {
                 session_name($nombre);
             }
             session_start();
-            $this->_control();
+          //  $this->_control();
         }
         self::$iniciada = true;
     }
@@ -22,7 +22,7 @@ class Session {
             $this->set('_ip', Server::getClientAddress());
             $this->set('_cliente', Server::getUserAgent());
         } else {
-            if ($ip !== Server::getClientAddress() || $cliente !== Server::getUserAgent()) {
+            if ($ip != Server::getClientAddress() || $cliente != Server::getUserAgent()) {
                 $this->destroy();
             }
         }
